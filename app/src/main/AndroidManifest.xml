@@ -22,6 +22,10 @@
             android:name=".Login"
             android:theme="@style/NoTitle">
         </activity>
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/NoTitle">
+        </activity>
     </application>
 
 </manifest>
