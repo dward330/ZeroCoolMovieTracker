@@ -49,6 +49,14 @@ public class Movies extends AppCompatActivity {
 
                     // Seed the Database with Data
                     movieDatabaseTable.runTransaction(getTransactionToSeedDatabaseWithMovieInfo());
+                    
+                    RecyclerView recyclerView=findViewById(R.id.movies_recylcer_view);
+                    LinearLayoutManager layoutManager=new LinearLayoutManager(Movies.this);
+                    layoutManager.setOrientation(RecyclerView.VERTICAL);
+                    layoutManager.scrollToPosition(0);
+                    recyclerView.setLayoutManager(layoutManager);
+                    moviesRecyclerAdapter=new MoviesRecyclerAdapter(recyclerView);
+                    recyclerView.setAdapter(moviesRecyclerAdapter);
                 } else {
                     RecyclerView recyclerView=findViewById(R.id.movies_recylcer_view);
                     LinearLayoutManager layoutManager=new LinearLayoutManager(Movies.this);
