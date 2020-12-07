@@ -343,17 +343,6 @@ public class MovieData {
     */
     private void createAndAddMovie(String name, String imageName, String description, String year,
                                    String length, double rating, String director, String stars, String url) {
-        HashMap movie = new HashMap();
-        movie.put("image",imageName);
-        movie.put("name", name);
-        movie.put("description", description);
-        movie.put("year", year);
-        movie.put("length",length);
-        movie.put("rating",rating);
-        movie.put("director",director);
-        movie.put("stars",stars);
-        movie.put("url",url);
-
         Movie movieInfo = new Movie();
         movieInfo.imageName = imageName;
         movieInfo.name = name;

@@ -17,12 +17,16 @@ import java.util.HashMap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import derrick.ward.movietracker.models.MovieData;
+import derrick.ward.movietracker.models.MoviesRecyclerAdapter;
 
 public class Movies extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference movieDatabaseTable = database.getReference("Movies");
+    private MoviesRecyclerAdapter moviesRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,14 @@ public class Movies extends AppCompatActivity {
 
                     // Seed the Database with Data
                     movieDatabaseTable.runTransaction(getTransactionToSeedDatabaseWithMovieInfo());
+                } else {
+                    RecyclerView recyclerView=findViewById(R.id.movies_recylcer_view);
+                    LinearLayoutManager layoutManager=new LinearLayoutManager(Movies.this);
+                    layoutManager.setOrientation(RecyclerView.VERTICAL);
+                    layoutManager.scrollToPosition(0);
+                    recyclerView.setLayoutManager(layoutManager);
+                    moviesRecyclerAdapter=new MoviesRecyclerAdapter(recyclerView);
+                    recyclerView.setAdapter(moviesRecyclerAdapter);
                 }
             }
 
@@ -64,14 +76,6 @@ public class Movies extends AppCompatActivity {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                 Object data = new MovieData().getMoviesList();
-
-                HashMap<String, HashMap<String, String>> movies = new HashMap<String, HashMap<String, String>>();
-                HashMap<String, String> sampleData = new HashMap<>();
-                sampleData.put("movieName", "Name");
-                sampleData.put("movieDirector", "Director");
-                sampleData.put("Rating", String.valueOf(3.4));
-
-                movies.put("Movie 1", sampleData);
 
                 // Set movies' information
                 currentData.setValue(data);
