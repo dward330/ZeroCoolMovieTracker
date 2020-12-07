@@ -89,5 +89,6 @@
         android:id="@+id/signUp"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Register New User"/>
+        android:text="Register New User"
+        android:onClick="registerNewUser"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

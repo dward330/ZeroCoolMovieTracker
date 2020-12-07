@@ -26,6 +26,10 @@
             android:name=".SignUp"
             android:theme="@style/NoTitle">
         </activity>
+        <activity
+            android:name=".Movies"
+            android:theme="@style/NoTitle">
+        </activity>
     </application>
 
 </manifest>

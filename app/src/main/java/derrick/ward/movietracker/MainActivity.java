@@ -42,13 +42,12 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 } else {
                     if (currentFirebaseUser.isEmailVerified()) {
-                        Toast.makeText(MainActivity.this, "User is signed in", Toast.LENGTH_SHORT).show();
-                        /*
-                        startActivity( new Intent(MainActivity.this, MovieClass.class));
+                        Toast.makeText(MainActivity.this, "Signed in User Detected", Toast.LENGTH_SHORT).show();
+
+                        startActivity( new Intent(MainActivity.this, Movies.class));
                         finish();
-                        */
                     } else {
-                        Toast.makeText(MainActivity.this, "Please verify your email and then proceed to login.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Please verify your email before trying to login. Check your email for process.", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(MainActivity.this, Login.class));
                         finish();
                     }

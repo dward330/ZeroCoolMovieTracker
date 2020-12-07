@@ -54,13 +54,15 @@
         android:id="@+id/loginResetPassword"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toTopOf="@id/login"
-        android:text="Reset Password"/>
+        android:text="Reset Password"
+        android:onClick="resetPassword"/>
     <Button
         style="@style/loginSignUpButtons"
         android:id="@+id/login"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toTopOf="@id/loginSignUp"
-        android:text="Login"/>
+        android:text="Login"
+        android:onClick="login"/>
     <Button
         style="@style/loginSignUpButtons"
         android:id="@+id/loginSignUp"
@@ -73,5 +75,6 @@
         android:id="@+id/resendEmailVerification"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Resend Email Verification"/>
+        android:text="Resend Email Verification"
+        android:onClick="resendEmailVerification"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
