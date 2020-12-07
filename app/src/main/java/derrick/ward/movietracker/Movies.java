@@ -49,7 +49,7 @@ public class Movies extends AppCompatActivity {
 
                     // Seed the Database with Data
                     movieDatabaseTable.runTransaction(getTransactionToSeedDatabaseWithMovieInfo());
-                    
+
                     RecyclerView recyclerView=findViewById(R.id.movies_recylcer_view);
                     LinearLayoutManager layoutManager=new LinearLayoutManager(Movies.this);
                     layoutManager.setOrientation(RecyclerView.VERTICAL);

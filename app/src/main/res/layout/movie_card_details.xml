@@ -9,20 +9,10 @@
     app:cardElevation="6dp"
     app:cardCornerRadius="6dp"
     android:layout_margin="8dp">
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-            <LinearLayout
+    <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/movieTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textStyle="bold"/>
                 <LinearLayout
                     android:id="@+id/movieTopDetails"
                     android:layout_width="wrap_content"
@@ -32,11 +22,11 @@
                     app:layout_constraintBottom_toTopOf="@id/movieDescription">
                     <ImageView
                         android:id="@+id/moviePoster"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         android:src="@drawable/network"
-                        android:layout_weight="5"
+                        android:layout_weight="1"
                         android:layout_marginStart="5dp"
                         android:layout_gravity="top"
                         />
@@ -47,46 +37,19 @@
                         app:layout_constraintRight_toRightOf="parent"
                         android:layout_weight="1">
                         <TextView
-                            android:id="@+id/movieLength"
+                            android:id="@+id/movieTitle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"/>
+                            android:layout_height="match_parent"
+                            android:textStyle="bold"
+                            android:layout_marginStart="5dp"/>
                         <TextView
-                            android:id="@+id/movieYear"
+                            android:id="@+id/movieDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"/>
-                        <TextView
-                            android:id="@+id/movieDirector"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"/>
-                        <EditText
-                            android:id="@+id/movieStars"
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:layout_marginStart="10dp"
-                            android:textSize="10dp"
-                            android:inputType="textMultiLine"
-                            android:focusable="false"
-                            android:maxLines ="4"/>
-                        <RatingBar
-                            android:id="@+id/movieRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="10"
-                            android:stepSize="1"
-                            android:layout_marginStart="10dp"
-                            style="@style/Widget.AppCompat.RatingBar.Small"/>
+                            app:layout_constraintTop_toBottomOf="@id/movieTopDetails"
+                            android:layout_marginStart="5dp"
+                            android:paddingBottom="10dp"/>
                     </LinearLayout>
                 </LinearLayout>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/movieDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/movieTopDetails"
-            android:layout_marginStart="5dp"
-            android:paddingBottom="10dp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

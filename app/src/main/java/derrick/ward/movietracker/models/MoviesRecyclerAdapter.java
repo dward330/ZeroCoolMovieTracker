@@ -74,13 +74,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         }
 
         holder.movieTitle.setText(movie.name);
-        holder.movieLength.setText(movie.length);
-        holder.movieYear.setText(movie.year);
-        holder.movieDirector.setText(movie.director);
-        holder.movieStars.setText(movie.stars);
-        holder.movieRating.setRating((float)movie.rating);
         holder.movieDescription.setText(movie.description);
-
 
         // Download movie Poster Image
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -101,11 +95,6 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 holder.movieTitle.setText(dataSnapshot.child("name").getValue().toString());
-                holder.movieLength.setText("Length: "+dataSnapshot.child("length").getValue().toString());
-                holder.movieYear.setText("Year: "+dataSnapshot.child("year").getValue().toString());
-                holder.movieDirector.setText("Director: "+dataSnapshot.child("director").getValue().toString());
-                holder.movieStars.setText("Actors: "+dataSnapshot.child("stars").getValue().toString());
-                holder.movieRating.setRating(Float.parseFloat(dataSnapshot.child("rating").getValue().toString()));
                 holder.movieDescription.setText(dataSnapshot.child("description").getValue().toString());
             }
 
@@ -230,11 +219,6 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     // Class used to communicate with UI Elements used for each instance of an entry
     public static class MovieViewHolder extends RecyclerView.ViewHolder{
         public TextView movieTitle;
-        public TextView movieLength;
-        public TextView movieYear;
-        public TextView movieDirector;
-        public TextView movieStars;
-        public RatingBar movieRating;
         public TextView movieDescription;
         public ImageView moviePoster;
 
@@ -247,11 +231,6 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
             // Bind Layout UI Elements to properties in View Holder Instance
             this.movieTitle = v.findViewById(R.id.movieTitle);
-            this.movieLength = v.findViewById(R.id.movieLength);
-            this.movieYear = v.findViewById(R.id.movieYear);
-            this.movieDirector = v.findViewById(R.id.movieDirector);
-            this.movieStars = v.findViewById(R.id.movieStars);
-            this.movieRating = v.findViewById(R.id.movieRating);
             this.movieDescription = v.findViewById(R.id.movieDescription);
             this.moviePoster = v.findViewById(R.id.moviePoster);
         }
