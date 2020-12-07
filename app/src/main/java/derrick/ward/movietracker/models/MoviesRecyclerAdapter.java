@@ -1,17 +1,22 @@
 package derrick.ward.movietracker.models;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import derrick.ward.movietracker.MovieDetails;
 import derrick.ward.movietracker.R;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -103,6 +108,14 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
             }
         });
+
+        // Set on click
+        holder.rootContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMovieDetails(movie.name);
+            }
+        });
     }
 
     @Override
@@ -110,6 +123,16 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         return this.movies.size();
     }
 
+    /*
+    * Navigate and Show Movie Details
+    */
+    private void showMovieDetails(String movieName) {
+        Intent movieDetailsIntent = new Intent(context, MovieDetails.class);
+        movieDetailsIntent.putExtra("MovieName", movieName);
+        context.startActivity(movieDetailsIntent);
+    }
+
+    /* Listens for Database Changes */
     private void listenForMovieDataChanges() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance(); // Get a reference to the firebase database
 
@@ -221,6 +244,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         public TextView movieTitle;
         public TextView movieDescription;
         public ImageView moviePoster;
+        public CardView rootContainer;
 
         public DatabaseReference movieDbRef; // Holds a reference to a specific movie in movies database table
         public ValueEventListener movieInfoChangeListener; // Holds a reference to listener to invoke when this movie is changed in movies database table
@@ -233,6 +257,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             this.movieTitle = v.findViewById(R.id.movieTitle);
             this.movieDescription = v.findViewById(R.id.movieDescription);
             this.moviePoster = v.findViewById(R.id.moviePoster);
+            this.rootContainer = v.findViewById(R.id.rootContainer);
         }
     }
 }

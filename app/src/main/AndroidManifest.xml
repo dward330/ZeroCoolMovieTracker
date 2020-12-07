@@ -30,6 +30,9 @@
             android:name=".Movies"
             android:theme="@style/NoTitle">
         </activity>
+        <activity
+            android:name=".MovieDetails"
+            android:theme="@style/NoTitle"></activity>
     </application>
 
 </manifest>
