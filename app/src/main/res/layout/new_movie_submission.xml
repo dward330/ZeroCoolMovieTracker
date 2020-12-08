@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".NewMovieSubmission">
+    <ImageView
+        android:id="@+id/submissionMoviePoster"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/photoicon"/>
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/submissionMoviePoster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/submissionMovieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Title"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Year"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Length (ex. 125 Min)"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieDirector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Director"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieCast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Cast"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Rating (1-10, ex 8.5)"
+            android:textColorHint="@color/red_pink"
+            />
+        <EditText
+            android:id="@+id/submissionMovieDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Movie's Description"
+            android:textColorHint="@color/red_pink"
+            />
+    </LinearLayout>
+    <Button
+        style="@style/loginSignUpButtons"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Submit Movie Review"
+        android:onClick="submitMovieReview"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

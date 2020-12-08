@@ -1,8 +1,10 @@
 package derrick.ward.movietracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -137,5 +139,10 @@ public class Movies extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    /* Navigates to the New Movie Submission Screen */
+    public void submitMovieReview(View view) {
+        startActivity(new Intent(this, NewMovieSubmission.class));
     }
 }
