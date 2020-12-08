@@ -275,7 +275,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         final FirebaseDatabase database = FirebaseDatabase.getInstance(); // Get a reference to the firebase database
 
         // Clear Movies
-        movies.clear();
+        movies = new ArrayList<Movie>();
 
         // Remove Previous Database Table Listeners if they Exist
         if (movieDatabaseTable != null && this.movieChangeDbRefListener != null) {
@@ -289,7 +289,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
         if (databaseReference != null) {
             this.movieChangeDbRefListener = movieDatabaseTable.addChildEventListener(getChildEventListenerForMovies());
-        } else if (query != null) {
+        } else {
             this.movieChangeDbRefListener = moviesWithRating.addChildEventListener(getChildEventListenerForMovies());
         }
     }
@@ -300,14 +300,13 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
                 Movie movieData = getMovieDataFromHashMap((HashMap<String, Object>)dataSnapshot.getValue());
-
                 if (movieData != null) {
                     movies.add(movieData);
 
                     Collections.sort(movies, new Comparator<Movie>() {
                         @Override
                         public int compare(Movie m1, Movie m2) {
-                            return m1.name.compareTo(m2.name);
+                            return m1.name.toUpperCase().compareTo(m2.name.toUpperCase());
                         }
                     });
 
