@@ -69,7 +69,7 @@ public class SignUp extends AppCompatActivity {
                         currentFirebaseUser.sendEmailVerification().addOnSuccessListener(SignUp.this, new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(SignUp.this, "Sign up Successful! Please verify your email before trying to login. Check your email for process.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUp.this, "Sign up Successful! Please verify your email before trying to login. Check your email for the process.", Toast.LENGTH_SHORT).show();
 
                                 saveNewUserToDB(newUser);
 
@@ -87,7 +87,7 @@ public class SignUp extends AppCompatActivity {
                 }).addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

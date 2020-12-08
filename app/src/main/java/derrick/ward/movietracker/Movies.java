@@ -1,6 +1,8 @@
 package derrick.ward.movietracker;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,6 +19,8 @@ import java.util.HashMap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import derrick.ward.movietracker.models.MovieData;
@@ -36,6 +40,9 @@ public class Movies extends AppCompatActivity {
         this.firebaseAuth = FirebaseAuth.getInstance(); // Initialize Firebase Authentication
 
         this.seedMovieDatabaseTableIfMissing();
+
+        Toolbar myToolBar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolBar);
     }
 
     /*
@@ -96,5 +103,39 @@ public class Movies extends AppCompatActivity {
                 String x = "successful";
             }
         };
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.appbar_menu, menu);
+        MenuItem myActionMenuItem = menu.findItem(R.id.search_action);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                /*
+                Toast query_text_submitted = Toast.makeText(getApplicationContext(), "Query Text Submitted", Toast.LENGTH_SHORT);
+                query_text_submitted.show();
+                */
+
+                moviesRecyclerAdapter.getFilter().filter(s);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                /*
+                Toast query_text_changed = Toast.makeText(getApplicationContext(), "Query Text Changed: " + s, Toast.LENGTH_SHORT);
+                query_text_changed.show();
+                */
+
+                moviesRecyclerAdapter.getFilter().filter(s);
+
+                return true;
+            }
+        });
+
+        return true;
     }
 }

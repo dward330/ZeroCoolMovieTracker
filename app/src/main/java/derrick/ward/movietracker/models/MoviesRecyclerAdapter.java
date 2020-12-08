@@ -2,22 +2,18 @@ package derrick.ward.movietracker.models;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import derrick.ward.movietracker.MovieDetails;
-import derrick.ward.movietracker.R;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -25,6 +21,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,17 +33,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+import derrick.ward.movietracker.MovieDetails;
+import derrick.ward.movietracker.R;
 
-public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.MovieViewHolder> {
+public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.MovieViewHolder> implements Filterable,  PopupMenu.OnMenuItemClickListener {
     private Context context;
     private List<Movie> movies = new ArrayList<Movie>();
     FirebaseDatabase database;
     private DatabaseReference movieDatabaseTable;
     private ChildEventListener movieChangeDbRefListener;
     private RecyclerView recyclerView;
+    private Movie currentSelectedMovie;
 
     public MoviesRecyclerAdapter(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
@@ -109,11 +113,24 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             }
         });
 
-        // Set on click
+        // Set Card On click
         holder.rootContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showMovieDetails(movie.name);
+            }
+        });
+
+        // Set Options On Click
+        holder.movieOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currentSelectedMovie = movie;
+                PopupMenu popupMenu = new PopupMenu(context, view);
+                popupMenu.setOnMenuItemClickListener(MoviesRecyclerAdapter.this);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.movie_menu, popupMenu.getMenu());
+                popupMenu.show();
             }
         });
     }
@@ -121,6 +138,107 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     @Override
     public int getItemCount() {
         return this.movies.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                List<Movie> filteredMovies = new ArrayList<Movie>();
+
+                if (charString.isEmpty()) {
+                    // Set Back to Movies Table Reference
+
+                } else {
+                    // use Query to Fetch Movies who have a rating at least > supplied filter
+
+                    // List<Movie> filteredMovies = new ArrayList<Movie>();
+
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredMovies;
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                movies = (List<Movie>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch(menuItem.getItemId()) {
+            case R.id.delete:
+                if (currentSelectedMovie != null) {
+                    movieDatabaseTable.child(currentSelectedMovie.name).runTransaction(getDeleteMovieTransactionHandler());
+                }
+                return true;
+            case R.id.duplicate:
+                if (currentSelectedMovie != null) {
+                    movieDatabaseTable.child(currentSelectedMovie.name+"_new").runTransaction(getCreateDuplicateMovieTransactionHandler(currentSelectedMovie));
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /* Gets Transaction Handler for Deleting a Movie */
+    private Transaction.Handler getDeleteMovieTransactionHandler() {
+        return new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Movie movie = getMovieDataFromHashMap((HashMap<String, Object>) currentData.getValue());
+
+                movie = null;
+
+                currentData.setValue(movie);
+
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                currentSelectedMovie = null;
+            }
+        };
+    }
+
+    /* Gets Transaction Handler for Duplicating a Movie */
+    private Transaction.Handler getCreateDuplicateMovieTransactionHandler(Movie movie) {
+        return new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Movie newMovie = new Movie();
+                newMovie.name = movie.name+"_new";
+                newMovie.description = movie.description;
+                newMovie.length = movie.length;
+                newMovie.year = movie.year;
+                newMovie.rating = movie.rating;
+                newMovie.director = movie.director;
+                newMovie.stars = movie.stars;
+                newMovie.url = movie.url;
+                newMovie.imageName = movie.imageName;
+
+                currentData.setValue(newMovie);
+
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                currentSelectedMovie = null;
+            }
+        };
     }
 
     /*
@@ -245,6 +363,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         public TextView movieDescription;
         public ImageView moviePoster;
         public CardView rootContainer;
+        public ImageView movieOptions;
 
         public DatabaseReference movieDbRef; // Holds a reference to a specific movie in movies database table
         public ValueEventListener movieInfoChangeListener; // Holds a reference to listener to invoke when this movie is changed in movies database table
@@ -258,6 +377,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             this.movieDescription = v.findViewById(R.id.movieDescription);
             this.moviePoster = v.findViewById(R.id.moviePoster);
             this.rootContainer = v.findViewById(R.id.rootContainer);
+            this.movieOptions = v.findViewById(R.id.options);
         }
     }
 }
