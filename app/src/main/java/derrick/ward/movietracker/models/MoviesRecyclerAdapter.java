@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,6 +48,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     private List<Movie> movies = new ArrayList<Movie>();
     FirebaseDatabase database;
     private DatabaseReference movieDatabaseTable;
+    private Query moviesWithRating;
     private ChildEventListener movieChangeDbRefListener;
     private RecyclerView recyclerView;
     private Movie currentSelectedMovie;
@@ -55,7 +57,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         this.recyclerView = recyclerView;
         this.database = FirebaseDatabase.getInstance(); // Get a reference to the firebase database
         this.movieDatabaseTable = database.getReference("Movies");
-        this.listenForMovieDataChanges();
+        this.listenForMovieDataChanges(this.movieDatabaseTable, null);
     }
 
     @NonNull
@@ -137,6 +139,10 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     @Override
     public int getItemCount() {
+        if (this.movies == null) {
+            return 0;
+        }
+
         return this.movies.size();
     }
 
@@ -148,14 +154,28 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                 String charString = charSequence.toString();
                 List<Movie> filteredMovies = new ArrayList<Movie>();
 
-                if (charString.isEmpty()) {
+                if (charString.trim().isEmpty()) {
                     // Set Back to Movies Table Reference
-
+                    listenForMovieDataChanges(movieDatabaseTable, null);
                 } else {
-                    // use Query to Fetch Movies who have a rating at least > supplied filter
+                    boolean filterIsANumber = true;
+                    double rating=0;
 
-                    // List<Movie> filteredMovies = new ArrayList<Movie>();
+                    try {
+                        rating = Double.parseDouble(charString.trim());
+                    } catch (Exception e) {
+                        filterIsANumber = false;
+                    }
 
+                    if (!filterIsANumber) {
+                        Toast.makeText(context, "Filter only takes a number (ex. 1 or 5.5)", Toast.LENGTH_SHORT).show();
+                        // Set Back to Movies Table Reference
+                        listenForMovieDataChanges(movieDatabaseTable, null);
+                    } else {
+                        // Build Query with filter to listen to
+                        moviesWithRating = movieDatabaseTable.orderByChild("rating").startAt(rating);
+                        listenForMovieDataChanges(null, moviesWithRating);
+                    }
                 }
 
                 FilterResults filterResults = new FilterResults();
@@ -251,10 +271,32 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     }
 
     /* Listens for Database Changes */
-    private void listenForMovieDataChanges() {
+    private void listenForMovieDataChanges(DatabaseReference databaseReference, Query query) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance(); // Get a reference to the firebase database
 
-        this.movieChangeDbRefListener = database.getReference("Movies").addChildEventListener(new ChildEventListener() {
+        // Clear Movies
+        movies.clear();
+
+        // Remove Previous Database Table Listeners if they Exist
+        if (movieDatabaseTable != null && this.movieChangeDbRefListener != null) {
+            movieDatabaseTable.removeEventListener(this.movieChangeDbRefListener);
+        }
+
+        // Remove Previous Query Listeners if they Exist
+        if (moviesWithRating != null && this.movieChangeDbRefListener != null) {
+            moviesWithRating.removeEventListener(this.movieChangeDbRefListener);
+        }
+
+        if (databaseReference != null) {
+            this.movieChangeDbRefListener = movieDatabaseTable.addChildEventListener(getChildEventListenerForMovies());
+        } else if (query != null) {
+            this.movieChangeDbRefListener = moviesWithRating.addChildEventListener(getChildEventListenerForMovies());
+        }
+    }
+
+    /* Listen for Movies CRUD Operations and updates View */
+    private ChildEventListener getChildEventListenerForMovies() {
+        return new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
                 Movie movieData = getMovieDataFromHashMap((HashMap<String, Object>)dataSnapshot.getValue());
@@ -331,7 +373,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
     }
 
     // Map HashMap into Movie Model
