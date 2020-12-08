@@ -121,15 +121,9 @@ public class NewMovieSubmission extends AppCompatActivity implements PopupMenu.O
             Toast.makeText(this, "Please Enter Movie's Rating (1-10, ex 8.5)", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            boolean ratingIsANumber = true;
+            String numericRegex = "\\d+";
 
-            try {
-                double rating = Double.parseDouble(movieRatingEntered.trim());
-            } catch (Exception e) {
-                ratingIsANumber = false;
-            }
-
-            if (!ratingIsANumber) {
+            if (!movieRatingEntered.trim().matches(numericRegex)) {
                 Toast.makeText(this, "Please Enter Movie's Rating as a number! (1-10, ex 8.5)", Toast.LENGTH_SHORT).show();
                 return;
             }

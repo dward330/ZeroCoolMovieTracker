@@ -158,20 +158,14 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                     // Set Back to Movies Table Reference
                     listenForMovieDataChanges(movieDatabaseTable, null);
                 } else {
-                    boolean filterIsANumber = true;
-                    double rating=0;
+                    String numericRegex = "\\d+";
 
-                    try {
-                        rating = Double.parseDouble(charString.trim());
-                    } catch (Exception e) {
-                        filterIsANumber = false;
-                    }
-
-                    if (!filterIsANumber) {
+                    if (!charString.trim().matches(numericRegex)) {
                         Toast.makeText(context, "Filter only takes a number (ex. 1 or 5.5)", Toast.LENGTH_SHORT).show();
                         // Set Back to Movies Table Reference
                         listenForMovieDataChanges(movieDatabaseTable, null);
                     } else {
+                        double rating = Double.parseDouble(charString.trim());
                         // Build Query with filter to listen to
                         moviesWithRating = movieDatabaseTable.orderByChild("rating").startAt(rating);
                         listenForMovieDataChanges(null, moviesWithRating);
